@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoltageCurrentGraphApp", "VoltageCurrentGraphApp.csproj", "{2B240EB6-C6D8-4986-9A48-3164B4DE991E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B240EB6-C6D8-4986-9A48-3164B4DE991E}.Debug|x86.ActiveCfg = Debug|x86
+		{2B240EB6-C6D8-4986-9A48-3164B4DE991E}.Debug|x86.Build.0 = Debug|x86
+		{2B240EB6-C6D8-4986-9A48-3164B4DE991E}.Release|x86.ActiveCfg = Release|x86
+		{2B240EB6-C6D8-4986-9A48-3164B4DE991E}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
