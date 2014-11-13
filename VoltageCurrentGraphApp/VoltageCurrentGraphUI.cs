@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using INFRA.USB;
-using VoltageCurrentGraphApp.VoltageCurrentGraphApp;
+using INFRA.USB.Classes;
 using ZedGraph;
 
 namespace VoltageCurrentGraphApp
@@ -22,10 +22,8 @@ namespace VoltageCurrentGraphApp
         int rpmLastTick = 0, rpmTotalTick = 0;
         int vcLastTick = 0, vcTotalTick = 0;
 
-        private UsbHidPort hidPort;
-        RingBuffer<int> _voltageBuffer;
-        RingBuffer<int> _currentBuffer;
-        private Oscilloscope _oscilloscope;
+        private HidInterface _hidDevice;
+        private HidBatteryAnalyzer _hidBatteryAnalyzer;
 
         private BackgroundWorker graphDataReader;
 
@@ -35,95 +33,31 @@ namespace VoltageCurrentGraphApp
         {
             InitializeComponent();
 
-            _voltageBuffer = new RingBuffer<int>(50000);
-            _currentBuffer = new RingBuffer<int>(5000);
-
             // settings for ZedGraph controls
             InitZedGraphControls();
 
-            hidPort = new UsbHidPort(0x1FBD, 0x0003);
-            hidPort.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
-            hidPort.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
-            hidPort.OnDataRecieved += new DataRecievedEventHandler(hidPort_OnDataRecieved);
-            hidPort.CheckDevicePresent();
+            _hidDevice = new HidInterface(0x1FBD, 0x0003);
+            _hidDevice.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
+            _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
+            _hidDevice.ConnectTargetDevice();
+
+
+            _hidBatteryAnalyzer = new HidBatteryAnalyzer(_hidDevice, 100);
+            _hidBatteryAnalyzer.OnAnalogDataReceived += _hidBatteryAnalyzer_OnAnalogDataReceived;
+
 
             zgcVoltage.MouseMove += new MouseEventHandler(zgcVoltage_MouseMove);
             zgcCurrent.MouseMove += new MouseEventHandler(zgcCurrent_MouseMove);
 
-            graphDataReader = new BackgroundWorker();
-            graphDataReader.DoWork += new DoWorkEventHandler(graphDataReader_DoWork);
-            graphDataReader.RunWorkerAsync();
+            //graphDataReader = new BackgroundWorker();
+            //graphDataReader.RunWorkerAsync();
         }
 
-        //private bool IsStopWatchStarted = false;
-        //private int tmr = 0;
-        private void hidPort_OnDataRecieved(object sender, DataRecievedEventArgs args)
+        void _hidBatteryAnalyzer_OnAnalogDataReceived(object sender, AnalogDataReceivedEventArgs e)
         {
-            int[] voltageReadeings = GetIntArray(args.data, 1, 50);
-            int[] currentReadeings = GetIntArray(args.data, 51, 2);
-            _voltageBuffer.PutBlocking(voltageReadeings, 0, voltageReadeings.Length);
-            _currentBuffer.PutBlocking(currentReadeings, 0, currentReadeings.Length);
-
-            /*
-            if (tmr++%100 == 0)
-            {
-                if (!IsStopWatchStarted)
-                {
-                    IsStopWatchStarted = true;
-                    stopWatch.Reset();
-                    stopWatch.Start();
-                }
-                else
-                {
-                    stopWatch.Stop();
-                    ThreadHelperClass.SetText(this, voltageLabel, voltageReadeings[0].ToString());
-                    ThreadHelperClass.SetText(this, currentLabel, currentReadeings[0].ToString());
-                    ThreadHelperClass.SetText(this, label1, (stopWatch.Elapsed.TotalMilliseconds / 100).ToString());
-                    ThreadHelperClass.SetText(this, label2, "R.V: " + _voltageBuffer.RemainingLengthToWrite);
-                    ThreadHelperClass.SetText(this, label3, "R.C: " + _currentBuffer.RemainingLengthToWrite);
-                    IsStopWatchStarted = false;
-                }
-            }
-            */
+            SetGraphDta(e.VoltageData, e.CurrentData);
         }
-
-        void graphDataReader_DoWork(object sender, DoWorkEventArgs e)
-        {
-            int[] voltageData = new int[5000];
-            int[] currentData = new int[200];
-            while (true)
-            {
-                //stopWatch.Reset();
-                //stopWatch.Start();
-                _voltageBuffer.GetBlocking(voltageData, voltageData.Length);
-                _currentBuffer.GetBlocking(currentData, currentData.Length);
-
-
-                SetGraphDta(voltageData, currentData);
-
-                // Osciloscope-Lib
-                //int c = 0, i = 0, j = 0;
-                //foreach (int v in voltageData)
-                //{
-                //    if (i++ % 25 == 0) { c = currentData[j++]; }
-                //    _oscilloscope.AddData(v * 1.0, c * 1.0, 0);
-                //}
-
-                System.Threading.Thread.Sleep(100);
-                //stopWatch.Stop();
-                //ThreadHelperClass.SetText(this, label1, (stopWatch.Elapsed.TotalMilliseconds).ToString());
-            }
-        }
-
-        int[] GetIntArray(byte[] bytes, int startIndex, int length)
-        {
-            var result = new int[length / 2];
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = BitConverter.ToInt16(bytes, startIndex + (i * 2));
-            }
-            return result;
-        }
+        
 
         private double voltage_x = 0;
         private double current_x = 0;
@@ -253,7 +187,7 @@ namespace VoltageCurrentGraphApp
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            hidPort.Dispose();
+            _hidDevice.Dispose();
             base.OnClosing(e);
         }
 
@@ -265,27 +199,6 @@ namespace VoltageCurrentGraphApp
         void hidPort_OnDeviceAttached(object sender, EventArgs e)
         {
             lblUsbConnected.Text = "Connected";
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            if (hidPort != null)
-                hidPort.ParseMessages(ref m);
-            base.WndProc(ref m);
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            if (hidPort != null)
-                hidPort.RegisterHandle(Handle);
-            base.OnHandleCreated(e);
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            if (hidPort != null)
-                hidPort.UnregisterHandle();
-            base.OnHandleDestroyed(e);
         }
 
         private void tmrGraphUpdater_Tick(object sender, EventArgs e)
