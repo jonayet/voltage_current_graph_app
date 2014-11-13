@@ -38,9 +38,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZedGraph">
-      <HintPath>3rd Party Library\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HidBatteryAnalyzer.cs" />
@@ -83,9 +80,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DotNet Library\usb_hid\INFRA.USB\INFRA.USB.csproj">
+    <ProjectReference Include="..\..\..\Library\usb_hid\INFRA.USB\INFRA.USB.csproj">
       <Project>{71e42a6d-c432-4c03-bf4f-abfd2a3173e0}</Project>
       <Name>INFRA.USB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Library\zed_graph\ZedGraph.csproj">
+      <Project>{2541686b-1673-43bf-af89-3163945db009}</Project>
+      <Name>ZedGraph</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

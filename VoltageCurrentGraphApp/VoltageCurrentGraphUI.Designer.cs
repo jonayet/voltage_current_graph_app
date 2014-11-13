@@ -32,13 +32,13 @@
             this.lblUsbConnected = new System.Windows.Forms.Label();
             this.voltageLabel = new System.Windows.Forms.Label();
             this.currentLabel = new System.Windows.Forms.Label();
-            this.zgcCurrent = new ZedGraph.ZedGraphControl();
-            this.zgcVoltage = new ZedGraph.ZedGraphControl();
             this.tmrGraphUpdater = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.tmrGraphScroller = new System.Windows.Forms.Timer(this.components);
+            this.zgcCurrent = new ZedGraph.ZedGraphControl();
+            this.zgcVoltage = new ZedGraph.ZedGraphControl();
             this.SuspendLayout();
             // 
             // lblUsbConnected
@@ -68,51 +68,10 @@
             this.currentLabel.TabIndex = 2;
             this.currentLabel.Text = "label2";
             // 
-            // zgcCurrent
-            // 
-            this.zgcCurrent.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.zgcCurrent.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.zgcCurrent.IsPrintKeepAspectRatio = false;
-            this.zgcCurrent.Location = new System.Drawing.Point(8, 232);
-            this.zgcCurrent.Name = "zgcCurrent";
-            this.zgcCurrent.PanButtons = System.Windows.Forms.MouseButtons.None;
-            this.zgcCurrent.PanButtons2 = System.Windows.Forms.MouseButtons.Left;
-            this.zgcCurrent.ScrollGrace = 0D;
-            this.zgcCurrent.ScrollMaxX = 0D;
-            this.zgcCurrent.ScrollMaxY = 0D;
-            this.zgcCurrent.ScrollMaxY2 = 0D;
-            this.zgcCurrent.ScrollMinX = 0D;
-            this.zgcCurrent.ScrollMinY = 0D;
-            this.zgcCurrent.ScrollMinY2 = 0D;
-            this.zgcCurrent.Size = new System.Drawing.Size(700, 200);
-            this.zgcCurrent.TabIndex = 4;
-            this.zgcCurrent.ZoomButtons = System.Windows.Forms.MouseButtons.None;
-            // 
-            // zgcVoltage
-            // 
-            this.zgcVoltage.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.zgcVoltage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.zgcVoltage.IsPrintKeepAspectRatio = false;
-            this.zgcVoltage.Location = new System.Drawing.Point(8, 27);
-            this.zgcVoltage.Name = "zgcVoltage";
-            this.zgcVoltage.PanButtons = System.Windows.Forms.MouseButtons.None;
-            this.zgcVoltage.PanButtons2 = System.Windows.Forms.MouseButtons.Left;
-            this.zgcVoltage.ScrollGrace = 0D;
-            this.zgcVoltage.ScrollMaxX = 0D;
-            this.zgcVoltage.ScrollMaxY = 0D;
-            this.zgcVoltage.ScrollMaxY2 = 0D;
-            this.zgcVoltage.ScrollMinX = 0D;
-            this.zgcVoltage.ScrollMinY = 0D;
-            this.zgcVoltage.ScrollMinY2 = 0D;
-            this.zgcVoltage.Size = new System.Drawing.Size(700, 200);
-            this.zgcVoltage.TabIndex = 3;
-            this.zgcVoltage.ZoomButtons = System.Windows.Forms.MouseButtons.None;
-            // 
             // tmrGraphUpdater
             // 
             this.tmrGraphUpdater.Enabled = true;
-            this.tmrGraphUpdater.Interval = 20;
-            this.tmrGraphUpdater.Tick += new System.EventHandler(this.tmrGraphUpdater_Tick);
+            this.tmrGraphUpdater.Interval = 10;
             // 
             // label1
             // 
@@ -144,8 +103,47 @@
             // tmrGraphScroller
             // 
             this.tmrGraphScroller.Enabled = true;
-            this.tmrGraphScroller.Interval = 20;
-            this.tmrGraphScroller.Tick += new System.EventHandler(this.tmrGraphScroller_Tick);
+            this.tmrGraphScroller.Interval = 10;
+            // 
+            // zgcCurrent
+            // 
+            this.zgcCurrent.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.zgcCurrent.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.zgcCurrent.IsPrintKeepAspectRatio = false;
+            this.zgcCurrent.Location = new System.Drawing.Point(8, 232);
+            this.zgcCurrent.Name = "zgcCurrent";
+            this.zgcCurrent.PanButtons = System.Windows.Forms.MouseButtons.None;
+            this.zgcCurrent.PanButtons2 = System.Windows.Forms.MouseButtons.Left;
+            this.zgcCurrent.ScrollGrace = 0D;
+            this.zgcCurrent.ScrollMaxX = 0D;
+            this.zgcCurrent.ScrollMaxY = 0D;
+            this.zgcCurrent.ScrollMaxY2 = 0D;
+            this.zgcCurrent.ScrollMinX = 0D;
+            this.zgcCurrent.ScrollMinY = 0D;
+            this.zgcCurrent.ScrollMinY2 = 0D;
+            this.zgcCurrent.Size = new System.Drawing.Size(700, 200);
+            this.zgcCurrent.TabIndex = 4;
+            this.zgcCurrent.ZoomButtons = System.Windows.Forms.MouseButtons.None;
+            // 
+            // zgcVoltage
+            // 
+            this.zgcVoltage.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.zgcVoltage.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.zgcVoltage.IsPrintKeepAspectRatio = false;
+            this.zgcVoltage.Location = new System.Drawing.Point(8, 27);
+            this.zgcVoltage.Name = "zgcVoltage";
+            this.zgcVoltage.PanButtons = System.Windows.Forms.MouseButtons.None;
+            this.zgcVoltage.PanButtons2 = System.Windows.Forms.MouseButtons.Left;
+            this.zgcVoltage.ScrollGrace = 0D;
+            this.zgcVoltage.ScrollMaxX = 0D;
+            this.zgcVoltage.ScrollMaxY = 0D;
+            this.zgcVoltage.ScrollMaxY2 = 0D;
+            this.zgcVoltage.ScrollMinX = 0D;
+            this.zgcVoltage.ScrollMinY = 0D;
+            this.zgcVoltage.ScrollMinY2 = 0D;
+            this.zgcVoltage.Size = new System.Drawing.Size(700, 200);
+            this.zgcVoltage.TabIndex = 3;
+            this.zgcVoltage.ZoomButtons = System.Windows.Forms.MouseButtons.None;
             // 
             // VoltageCurrentGraphUI
             // 
