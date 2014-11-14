@@ -7,11 +7,13 @@ namespace CallibrationApp
     public class HidBatteryAnalyzer
     {
         public event AnalogDataReceivedEventHandler OnAnalogDataReceived;
+        public int ActualVoltageValue { get; private set; }
         public float VoltageConstant { get; private set; }
         public float VoltageOffset { get; private set; }
+        public float Voltage { get; private set; }
+        public int ActualCurrentValue { get; private set; }
         public float CurrentConstant { get; private set; }
         public float CurrentOffset { get; private set; }
-        public float Voltage { get; private set; }
         public float Current { get; private set; }
 
         private const int READ_INDEX_OF_VOLTAGE_DATA = 0;
@@ -55,12 +57,27 @@ namespace CallibrationApp
             _currentBuffer = new RingBuffer<int>(_sizeOfCurrentBuffer);
         }
 
-        public void ResetCalibration()
+        public void CalibrateVoltage(float actualVoltage1, int deviceVoltageData1, float actualVoltage2, int deviceVoltageData2)
         {
-            WriteCalibration(1.0f, 0.0f, 1.0f, 0.0f);
+            // slope = (y1-y2)/(x1-x2)
+            // offset = y-(slope*x)
+            // y = offset + slope*x
+            float vConstant = (actualVoltage1 - actualVoltage2)/(deviceVoltageData1 - deviceVoltageData2);
+            float vOffset = actualVoltage1 - (deviceVoltageData1*vConstant);
+            WriteVoltageCalibrationData(0.06f, 0);
         }
 
-        public void WriteCalibration(float voltageConstant, float voltageOffset, float currentConstant, float currentOffset)
+        public void CalibrateCurrent(float actualCurrent1, int deviceCurrentData1, float actualCurrent2, int deviceCurrentData2)
+        {
+            // slope = (y1-y2)/(x1-x2)
+            // offset = y-(slope*x)
+            // y = offset + slope*x
+            float cConstant = (actualCurrent1 - actualCurrent2) / (deviceCurrentData1 - deviceCurrentData2);
+            float cOffset = actualCurrent1 - (deviceCurrentData1 * cConstant);
+            WriteCurrentCalibrationData(cConstant, cOffset);
+        }
+
+        public void WriteVoltageCalibrationData(float constant, float offset)
         {
             var calibrationData = new byte[HidOutputReport.UserDataLength];
 
@@ -68,17 +85,40 @@ namespace CallibrationApp
             calibrationData[WRITE_INDEX_OF_CMD_SET_CALIBRATION] = CMD_SET_CALIBRATION;
 
             // set voltage constatnt
-            Array.Copy(BitConverter.GetBytes(voltageConstant), 0, calibrationData, WRITE_INDEX_OF_VOLTAGE_CONSTANT, SIZE_OF_VOLTAGE_CONSTANT);
+            Array.Copy(BitConverter.GetBytes(constant), 0, calibrationData, WRITE_INDEX_OF_VOLTAGE_CONSTANT, SIZE_OF_VOLTAGE_CONSTANT);
 
             // set voltage offset
-            var vOffset = (short)(voltageOffset * 1000);
+            var vOffset = (short)(offset * 1000);
             Array.Copy(BitConverter.GetBytes(vOffset), 0, calibrationData, WRITE_INDEX_OF_VOLTAGE_OFFSET, SIZE_OF_VOLTAGE_OFFSET);
 
             // set current constatnt
-            Array.Copy(BitConverter.GetBytes(currentConstant), 0, calibrationData, WRITE_INDEX_OF_CURRENT_CONSTANT, SIZE_OF_CURRENT_CONSTANT);
+            Array.Copy(BitConverter.GetBytes(0f), 0, calibrationData, WRITE_INDEX_OF_CURRENT_CONSTANT, SIZE_OF_CURRENT_CONSTANT);
 
             // set current offset
-            var cOffset = (short)(currentOffset * 1000);
+            Array.Copy(BitConverter.GetBytes((short)(0)), 0, calibrationData, WRITE_INDEX_OF_CURRENT_OFFSET, SIZE_OF_CURRENT_OFFSET);
+
+            // write to the device
+            _hidDevice.Write(calibrationData);
+        }
+
+        public void WriteCurrentCalibrationData(float constant, float offset)
+        {
+            var calibrationData = new byte[HidOutputReport.UserDataLength];
+
+            // sset command
+            calibrationData[WRITE_INDEX_OF_CMD_SET_CALIBRATION] = CMD_SET_CALIBRATION;
+
+            // set voltage constatnt
+            Array.Copy(BitConverter.GetBytes(0f), 0, calibrationData, WRITE_INDEX_OF_VOLTAGE_CONSTANT, SIZE_OF_VOLTAGE_CONSTANT);
+
+            // set voltage offset
+            Array.Copy(BitConverter.GetBytes((short)(0)), 0, calibrationData, WRITE_INDEX_OF_VOLTAGE_OFFSET, SIZE_OF_VOLTAGE_OFFSET);
+
+            // set current constatnt
+            Array.Copy(BitConverter.GetBytes(constant), 0, calibrationData, WRITE_INDEX_OF_CURRENT_CONSTANT, SIZE_OF_CURRENT_CONSTANT);
+
+            // set current offset
+            var cOffset = (short)(offset * 1000);
             Array.Copy(BitConverter.GetBytes(cOffset), 0, calibrationData, WRITE_INDEX_OF_CURRENT_OFFSET, SIZE_OF_CURRENT_OFFSET);
 
             // write to the device
@@ -119,11 +159,13 @@ namespace CallibrationApp
         {
             int sum = 0;
             foreach (int v in voltageData) { sum += v; }
-            Voltage = (sum/voltageData.Length)*VoltageConstant + VoltageOffset;
+            ActualVoltageValue = sum/voltageData.Length;
+            Voltage = ActualVoltageValue * VoltageConstant + VoltageOffset;
 
             sum = 0;
             foreach (int c in currentData) { sum += c; }
-            Current = (sum/currentData.Length)*CurrentConstant + CurrentOffset;
+            ActualCurrentValue = sum/currentData.Length;
+            Current = ActualCurrentValue * CurrentConstant + CurrentOffset;
         }
 
         private void ExtractCalibrationData(byte[] rawData)
