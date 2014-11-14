@@ -77,7 +77,7 @@ namespace VoltageCurrentGraphApp
             foreach (int v in voltageData)
             {
                 plVoltage.Add(voltage_x, Math.Abs(v) / 50);
-                voltage_x += 0.005;
+                voltage_x += 0.01;
                 if (voltage_x > 200)
                 {
                     plVoltage.Clear();
@@ -184,7 +184,7 @@ namespace VoltageCurrentGraphApp
                 zGraph.GraphPane.XAxis.MajorGrid.DashOff = 5;
                 zGraph.GraphPane.YAxis.MajorGrid.DashOn = 0;
                 //zGraph.GraphPane.XAxis.Scale.IsVisible = false;
-                zGraph.GraphPane.XAxis.Scale.IsReverse = true;
+                zGraph.GraphPane.XAxis.Scale.IsReverse = false;
 
                 // set Y axis
                 zGraph.GraphPane.YAxis.Scale.Align = AlignP.Inside;
