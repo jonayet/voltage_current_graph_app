@@ -64,7 +64,7 @@ namespace CallibrationApp
             // y = offset + slope*x
             float vConstant = (actualVoltage1 - actualVoltage2)/(deviceVoltageData1 - deviceVoltageData2);
             float vOffset = actualVoltage1 - (deviceVoltageData1*vConstant);
-            WriteVoltageCalibrationData(0.06f, 0);
+            WriteVoltageCalibrationData(vConstant, 0);
         }
 
         public void CalibrateCurrent(float actualCurrent1, int deviceCurrentData1, float actualCurrent2, int deviceCurrentData2)
@@ -74,7 +74,7 @@ namespace CallibrationApp
             // y = offset + slope*x
             float cConstant = (actualCurrent1 - actualCurrent2) / (deviceCurrentData1 - deviceCurrentData2);
             float cOffset = actualCurrent1 - (deviceCurrentData1 * cConstant);
-            WriteCurrentCalibrationData(cConstant, cOffset);
+            WriteCurrentCalibrationData(cConstant, 0);
         }
 
         public void WriteVoltageCalibrationData(float constant, float offset)
