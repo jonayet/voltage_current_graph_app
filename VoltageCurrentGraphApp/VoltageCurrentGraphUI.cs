@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using INFRA.USB;
-using INFRA.USB.Classes;
 using ZedGraph;
 
 namespace VoltageCurrentGraphApp
@@ -40,7 +39,7 @@ namespace VoltageCurrentGraphApp
             }
             
 
-            _hidDevice = new HidInterface(0x1FBD, 0x0003);
+            _hidDevice = new HidInterface(0x1FBD, 0x0004);
             _hidDevice.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
             _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
             _hidDevice.ConnectTargetDevice();
@@ -89,6 +88,11 @@ namespace VoltageCurrentGraphApp
             {
                 plCurrent.Add(current_x, Math.Abs(c)/50);
                 current_x += 0.25;
+                if (current_x > 200)
+                {
+                    plCurrent.Clear();
+                    current_x = 0;
+                }
             }
         }
 

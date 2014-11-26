@@ -7,8 +7,8 @@ namespace CallibrationApp
 {
     public partial class CalibrationUI : Form
     {
-        private HidInterface _hidDevice;
-        private HidBatteryAnalyzer _hidBatteryAnalyzer;
+        private readonly HidInterface _hidDevice;
+        private readonly HidBatteryAnalyzer _hidBatteryAnalyzer;
         private CalibrationStage _voltageCalibrationStage;
         private CalibrationStage _currentCalibrationStage;
         private float _actualVoltage1, _actualVoltage2;
@@ -20,15 +20,15 @@ namespace CallibrationApp
         {
             InitializeComponent();
 
-            _hidDevice = new HidInterface(0x1FBD, 0x0003);
+            _hidDevice = new HidInterface(0x1FBD, 0x0004);
             _hidDevice.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
             _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
             _hidDevice.ConnectTargetDevice();
 
             _hidBatteryAnalyzer = new HidBatteryAnalyzer(_hidDevice, 50);
             _hidBatteryAnalyzer.OnAnalogDataReceived += _hidBatteryAnalyzer_OnAnalogDataReceived;
-            _voltageCalibrationStage = CalibrationStage.Start;
-            _currentCalibrationStage = CalibrationStage.Start;
+            _voltageCalibrationStage = CalibrationStage.Initial;
+            _currentCalibrationStage = CalibrationStage.Initial;
         }
 
         void _hidBatteryAnalyzer_OnAnalogDataReceived(object sender, AnalogDataReceivedEventArgs e)
@@ -64,7 +64,7 @@ namespace CallibrationApp
         {
             switch (_voltageCalibrationStage)
             {
-                case CalibrationStage.Start:
+                case CalibrationStage.Initial:
                     var result = MessageBox.Show("Are you sure to Calibrate Voltage?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) return;
                     actualVoltageTextBox.Text = "";
@@ -96,7 +96,7 @@ namespace CallibrationApp
                     actualVoltageTextBox.Text = "";
                     setVoltageButton.Text = "Start Calibration";
                     actualVoltageTextBox.Enabled = false;
-                    _voltageCalibrationStage = CalibrationStage.Start;
+                    _voltageCalibrationStage = CalibrationStage.Initial;
 
                     _hidBatteryAnalyzer.CalibrateVoltage(_actualVoltage1, _deviceVoltageData1, _actualVoltage2, _deviceVoltageData2);
                     MessageBox.Show("Voltage calibration was successfull!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -108,7 +108,7 @@ namespace CallibrationApp
         {
             switch (_currentCalibrationStage)
             {
-                case CalibrationStage.Start:
+                case CalibrationStage.Initial:
                     var result = MessageBox.Show("Are you sure to Calibrate Current?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) return;
                     actualCurrentTextBox.Text = "";
@@ -141,7 +141,7 @@ namespace CallibrationApp
                     actualCurrentTextBox.Text = "";
                     setCurrentButton.Text = "Start Calibration";
                     actualCurrentTextBox.Enabled = false;
-                    _currentCalibrationStage = CalibrationStage.Start;
+                    _currentCalibrationStage = CalibrationStage.Initial;
 
                     _hidBatteryAnalyzer.CalibrateCurrent(_actualCurrent1, _deviceCurrentData1, _actualCurrent2, _deviceCurrentData2);
                     MessageBox.Show("Current calibration was successfull!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -152,7 +152,7 @@ namespace CallibrationApp
 
     enum CalibrationStage
     {
-        Start,
+        Initial,
         Value1,
         Value2,
     }

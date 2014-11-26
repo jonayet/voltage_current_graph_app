@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using INFRA.USB;
-using INFRA.USB.Classes;
+using INFRA.USB.HelperClasses;
 
 namespace VoltageCurrentGraphApp
 {

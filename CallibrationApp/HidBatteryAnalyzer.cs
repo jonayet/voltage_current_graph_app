@@ -1,6 +1,6 @@
 ﻿using System;
 using INFRA.USB;
-using INFRA.USB.Classes;
+using INFRA.USB.HelperClasses;
 
 namespace CallibrationApp
 {
