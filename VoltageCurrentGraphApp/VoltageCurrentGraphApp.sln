@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoltageCurrentGraphUI", "VoltageCurrentGraphUI.csproj", "{2B240EB6-C6D8-4986-9A48-3164B4DE991E}"
 EndProject
@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZedGraph", "..\..\..\Librar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallibrationApp", "..\CallibrationApp\CallibrationApp.csproj", "{5596F585-1067-49F2-AB2C-F4B337BCE8AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INFRA.USB", "..\..\..\DotNet Library\usb_hid\INFRA.USB\INFRA.USB.csproj", "{71E42A6D-C432-4C03-BF4F-ABFD2A3173E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INFRA.USB", "..\..\..\Library\usb_hid\INFRA.USB\INFRA.USB.csproj", "{71E42A6D-C432-4C03-BF4F-ABFD2A3173E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

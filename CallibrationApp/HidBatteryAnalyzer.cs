@@ -1,7 +1,8 @@
 ﻿using System;
 using INFRA.USB;
-using INFRA.USB.HelperClasses;
+using INFRA.USB.HidHelper;
 
+// ReSharper disable InconsistentNaming
 namespace CallibrationApp
 {
     public class HidBatteryAnalyzer
@@ -36,7 +37,7 @@ namespace CallibrationApp
         private const int WRITE_INDEX_OF_CURRENT_OFFSET = 11;
         private const int SIZE_OF_CURRENT_OFFSET = 2;
 
-        private HidInterface _hidDevice;
+        private HidDevice _hidDevice;
         private readonly RingBuffer<int> _voltageBuffer;
         private readonly RingBuffer<int> _currentBuffer;
         private readonly int _sizeOfVoltageBuffer;
@@ -44,7 +45,7 @@ namespace CallibrationApp
         private readonly int _requiredSizeOfVoltageBuffer;
         private readonly int _requiredSizeOfCurrentBuffer;
 
-        public HidBatteryAnalyzer(HidInterface hidDevice, int sizeOfBuffer = 100)
+        public HidBatteryAnalyzer(HidDevice hidDevice, int sizeOfBuffer = 100)
         {
             _hidDevice = hidDevice;
             _hidDevice.OnReportReceived += _hidDevice_OnReportReceived;
@@ -79,7 +80,7 @@ namespace CallibrationApp
 
         public void WriteVoltageCalibrationData(float constant, float offset)
         {
-            var calibrationData = new byte[HidOutputReport.UserDataLength];
+            var calibrationData = new byte[64];
 
             // sset command
             calibrationData[WRITE_INDEX_OF_CMD_SET_CALIBRATION] = CMD_SET_CALIBRATION;
@@ -103,7 +104,7 @@ namespace CallibrationApp
 
         public void WriteCurrentCalibrationData(float constant, float offset)
         {
-            var calibrationData = new byte[HidOutputReport.UserDataLength];
+            var calibrationData = new byte[64];
 
             // sset command
             calibrationData[WRITE_INDEX_OF_CMD_SET_CALIBRATION] = CMD_SET_CALIBRATION;

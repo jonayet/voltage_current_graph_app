@@ -84,7 +84,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DotNet Library\usb_hid\INFRA.USB\INFRA.USB.csproj">
+    <ProjectReference Include="..\..\..\Library\usb_hid\INFRA.USB\INFRA.USB.csproj">
       <Project>{71e42a6d-c432-4c03-bf4f-abfd2a3173e0}</Project>
       <Name>INFRA.USB</Name>
     </ProjectReference>

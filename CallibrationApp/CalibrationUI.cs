@@ -7,7 +7,7 @@ namespace CallibrationApp
 {
     public partial class CalibrationUI : Form
     {
-        private readonly HidInterface _hidDevice;
+        private readonly HidDevice _hidDevice;
         private readonly HidBatteryAnalyzer _hidBatteryAnalyzer;
         private CalibrationStage _voltageCalibrationStage;
         private CalibrationStage _currentCalibrationStage;
@@ -20,10 +20,10 @@ namespace CallibrationApp
         {
             InitializeComponent();
 
-            _hidDevice = new HidInterface(0x1FBD, 0x0004);
+            _hidDevice = new HidDevice(0x1FBD, 0x0004);
             _hidDevice.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
             _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
-            _hidDevice.ConnectTargetDevice();
+            _hidDevice.Connect();
 
             _hidBatteryAnalyzer = new HidBatteryAnalyzer(_hidDevice, 50);
             _hidBatteryAnalyzer.OnAnalogDataReceived += _hidBatteryAnalyzer_OnAnalogDataReceived;

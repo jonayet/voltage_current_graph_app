@@ -21,7 +21,7 @@ namespace VoltageCurrentGraphApp
         int rpmLastTick = 0, rpmTotalTick = 0;
         int vcLastTick = 0, vcTotalTick = 0;
 
-        private HidInterface _hidDevice;
+        private HidDevice _hidDevice;
         private HidBatteryAnalyzer _hidBatteryAnalyzer;
         private BackgroundWorker graphDataReader;
         Stopwatch stopWatch = new Stopwatch();
@@ -37,12 +37,12 @@ namespace VoltageCurrentGraphApp
                 // settings for ZedGraph controls
                 InitZedGraphControls();    
             }
-            
 
-            _hidDevice = new HidInterface(0x1FBD, 0x0004);
+
+            _hidDevice = new HidDevice(0x1FBD, 0x0004);
             _hidDevice.OnDeviceAttached += new EventHandler(hidPort_OnDeviceAttached);
             _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
-            _hidDevice.ConnectTargetDevice();
+            _hidDevice.Connect();
 
 
             _hidBatteryAnalyzer = new HidBatteryAnalyzer(_hidDevice, 50);
@@ -126,7 +126,7 @@ namespace VoltageCurrentGraphApp
             zgcVoltage.GraphPane.AddCurve("Voltage", new RollingPointPairList(250000), Color.Green, SymbolType.None);
             zgcVoltage.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.Green;
             zgcVoltage.GraphPane.YAxis.Title.FontSpec.FontColor = Color.Green;
-            zgcVoltage.GraphPane.YAxis.Scale.Min = 0;
+            zgcVoltage.GraphPane.YAxis.Scale.Min = -100;
             zgcVoltage.GraphPane.YAxis.Scale.Max = 100;
             zgcVoltage.GraphPane.YAxis.Scale.MajorStep = 2;
             zgcVoltage.GraphPane.YAxis.Scale.MinorStep = 0;

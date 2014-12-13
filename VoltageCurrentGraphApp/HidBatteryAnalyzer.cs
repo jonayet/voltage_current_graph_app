@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using INFRA.USB;
-using INFRA.USB.HelperClasses;
+using INFRA.USB.HidHelper;
 
 namespace VoltageCurrentGraphApp
 {
@@ -17,7 +17,7 @@ namespace VoltageCurrentGraphApp
         private readonly int _requiredSizeOfVoltageBuffer;
         private readonly int _requiredSizeOfCurrentBuffer;
 
-        public HidBatteryAnalyzer(HidInterface hidDevice, int sizeOfBuffer = 100)
+        public HidBatteryAnalyzer(HidDevice hidDevice, int sizeOfBuffer = 100)
         {
             hidDevice.OnReportReceived += _hidDevice_OnReportReceived;
 
