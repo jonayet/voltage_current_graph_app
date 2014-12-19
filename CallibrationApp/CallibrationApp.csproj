@@ -46,7 +46,7 @@
     <Compile Include="CalibrationUI.Designer.cs">
       <DependentUpon>CalibrationUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="HidBatteryAnalyzer.cs" />
+    <Compile Include="HidBatteryAnalyzerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RingBuffer.cs" />

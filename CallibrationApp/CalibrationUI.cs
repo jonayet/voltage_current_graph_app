@@ -8,7 +8,7 @@ namespace CallibrationApp
     public partial class CalibrationUI : Form
     {
         private readonly HidDevice _hidDevice;
-        private readonly HidBatteryAnalyzer _hidBatteryAnalyzer;
+        private readonly HidBatteryAnalyzerManager _hidBatteryAnalyzerManager;
         private CalibrationStage _voltageCalibrationStage;
         private CalibrationStage _currentCalibrationStage;
         private float _actualVoltage1, _actualVoltage2;
@@ -25,23 +25,23 @@ namespace CallibrationApp
             _hidDevice.OnDeviceRemoved += new EventHandler(hidPort_OnDeviceRemoved);
             _hidDevice.Connect();
 
-            _hidBatteryAnalyzer = new HidBatteryAnalyzer(_hidDevice, 50);
-            _hidBatteryAnalyzer.OnAnalogDataReceived += _hidBatteryAnalyzer_OnAnalogDataReceived;
+            _hidBatteryAnalyzerManager = new HidBatteryAnalyzerManager(_hidDevice, 50);
+            _hidBatteryAnalyzerManager.OnAnalogDataReceived += HidBatteryAnalyzerManagerOnAnalogDataReceived;
             _voltageCalibrationStage = CalibrationStage.Initial;
             _currentCalibrationStage = CalibrationStage.Initial;
         }
 
-        void _hidBatteryAnalyzer_OnAnalogDataReceived(object sender, AnalogDataReceivedEventArgs e)
+        void HidBatteryAnalyzerManagerOnAnalogDataReceived(object sender, AnalogDataReceivedEventArgs e)
         {
             // show voltage constant & offset
-            ThreadHelperClass.SetText(this, voltageLabel, _hidBatteryAnalyzer.Voltage.ToString("0.0 V"));
-            ThreadHelperClass.SetText(this, voltageConstantlabel, _hidBatteryAnalyzer.VoltageConstant.ToString("0.0000000"));
-            ThreadHelperClass.SetText(this, voltageOffsetlabel, _hidBatteryAnalyzer.VoltageOffset.ToString("0.000"));
+            ThreadHelperClass.SetText(this, voltageLabel, _hidBatteryAnalyzerManager.Voltage.ToString("0.0 V"));
+            ThreadHelperClass.SetText(this, voltageConstantlabel, _hidBatteryAnalyzerManager.VoltageConstant.ToString("0.0000000"));
+            ThreadHelperClass.SetText(this, voltageOffsetlabel, _hidBatteryAnalyzerManager.VoltageOffset.ToString("0.000"));
 
             // show current constant & offset
-            ThreadHelperClass.SetText(this, currentLabel, _hidBatteryAnalyzer.Current.ToString("0.0 A"));
-            ThreadHelperClass.SetText(this, currentConstantLabel, _hidBatteryAnalyzer.CurrentConstant.ToString("0.0000000"));
-            ThreadHelperClass.SetText(this, currentOffsetLabel, _hidBatteryAnalyzer.CurrentOffset.ToString("0.000"));
+            ThreadHelperClass.SetText(this, currentLabel, _hidBatteryAnalyzerManager.Current.ToString("0.0 A"));
+            ThreadHelperClass.SetText(this, currentConstantLabel, _hidBatteryAnalyzerManager.CurrentConstant.ToString("0.0000000"));
+            ThreadHelperClass.SetText(this, currentOffsetLabel, _hidBatteryAnalyzerManager.CurrentOffset.ToString("0.000"));
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -79,7 +79,7 @@ namespace CallibrationApp
                         MessageBox.Show("Enter value in correct format", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    _deviceVoltageData1 = _hidBatteryAnalyzer.ActualVoltageValue;
+                    _deviceVoltageData1 = _hidBatteryAnalyzerManager.ActualVoltageValue;
                     actualVoltageTextBox.Text = "";
                     setVoltageButton.Text = "Adjust Voltage2 (24 V)";
                     actualVoltageTextBox.Enabled = true;
@@ -92,13 +92,13 @@ namespace CallibrationApp
                         MessageBox.Show("Enter value in correct format", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    _deviceVoltageData2 = _hidBatteryAnalyzer.ActualVoltageValue;
+                    _deviceVoltageData2 = _hidBatteryAnalyzerManager.ActualVoltageValue;
                     actualVoltageTextBox.Text = "";
                     setVoltageButton.Text = "Start Calibration";
                     actualVoltageTextBox.Enabled = false;
                     _voltageCalibrationStage = CalibrationStage.Initial;
 
-                    _hidBatteryAnalyzer.CalibrateVoltage(_actualVoltage1, _deviceVoltageData1, _actualVoltage2, _deviceVoltageData2);
+                    _hidBatteryAnalyzerManager.CalibrateVoltage(_actualVoltage1, _deviceVoltageData1, _actualVoltage2, _deviceVoltageData2);
                     MessageBox.Show("Voltage calibration was successfull!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
@@ -112,7 +112,7 @@ namespace CallibrationApp
                     var result = MessageBox.Show("Are you sure to Calibrate Current?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) return;
                     actualCurrentTextBox.Text = "";
-                    //_hidBatteryAnalyzer.WriteVoltageCalibrationData(1, 0);
+                    //_hidBatteryAnalyzerManager.WriteVoltageCalibrationData(1, 0);
                     setCurrentButton.Text = "Adjust Current1 (5 A)";
                     actualCurrentTextBox.Enabled = true;
                     _currentCalibrationStage = CalibrationStage.Value1;
@@ -124,7 +124,7 @@ namespace CallibrationApp
                         MessageBox.Show("Enter value in correct format", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    _deviceCurrentData1 = _hidBatteryAnalyzer.ActualCurrentValue;
+                    _deviceCurrentData1 = _hidBatteryAnalyzerManager.ActualCurrentValue;
                     actualCurrentTextBox.Text = "";
                     setCurrentButton.Text = "Adjust Current2 (20 A)";
                     actualCurrentTextBox.Enabled = true;
@@ -137,13 +137,13 @@ namespace CallibrationApp
                         MessageBox.Show("Enter value in correct format", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    _deviceCurrentData2 = _hidBatteryAnalyzer.ActualCurrentValue;
+                    _deviceCurrentData2 = _hidBatteryAnalyzerManager.ActualCurrentValue;
                     actualCurrentTextBox.Text = "";
                     setCurrentButton.Text = "Start Calibration";
                     actualCurrentTextBox.Enabled = false;
                     _currentCalibrationStage = CalibrationStage.Initial;
 
-                    _hidBatteryAnalyzer.CalibrateCurrent(_actualCurrent1, _deviceCurrentData1, _actualCurrent2, _deviceCurrentData2);
+                    _hidBatteryAnalyzerManager.CalibrateCurrent(_actualCurrent1, _deviceCurrentData1, _actualCurrent2, _deviceCurrentData2);
                     MessageBox.Show("Current calibration was successfull!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }

@@ -5,7 +5,7 @@ using INFRA.USB.HidHelper;
 // ReSharper disable InconsistentNaming
 namespace CallibrationApp
 {
-    public class HidBatteryAnalyzer
+    public class HidBatteryAnalyzerManager
     {
         public event AnalogDataReceivedEventHandler OnAnalogDataReceived;
         public int ActualVoltageValue { get; private set; }
@@ -45,7 +45,7 @@ namespace CallibrationApp
         private readonly int _requiredSizeOfVoltageBuffer;
         private readonly int _requiredSizeOfCurrentBuffer;
 
-        public HidBatteryAnalyzer(HidDevice hidDevice, int sizeOfBuffer = 100)
+        public HidBatteryAnalyzerManager(HidDevice hidDevice, int sizeOfBuffer = 100)
         {
             _hidDevice = hidDevice;
             _hidDevice.OnReportReceived += _hidDevice_OnReportReceived;
