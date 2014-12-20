@@ -17,14 +17,14 @@ namespace VoltageCurrentGraphApp
         private readonly int _requiredSizeOfVoltageBuffer;
         private readonly int _requiredSizeOfCurrentBuffer;
 
-        public HidBatteryAnalyzer(HidDevice hidDevice, int sizeOfBuffer = 100)
+        public HidBatteryAnalyzer(HidDevice hidDevice, int sizeOfBuffer = 1000)
         {
             hidDevice.OnReportReceived += _hidDevice_OnReportReceived;
 
             _sizeOfVoltageBuffer = sizeOfBuffer * 25;
             _sizeOfCurrentBuffer = sizeOfBuffer * 1;
             _requiredSizeOfVoltageBuffer = sizeOfBuffer * 25;
-            _requiredSizeOfCurrentBuffer = sizeOfBuffer * 1;
+            _requiredSizeOfCurrentBuffer = sizeOfBuffer;
             _voltageBuffer = new RingBuffer<int>(_sizeOfVoltageBuffer);
             _currentBuffer = new RingBuffer<int>(_sizeOfCurrentBuffer);
         }

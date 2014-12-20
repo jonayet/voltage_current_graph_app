@@ -107,7 +107,6 @@
             // 
             // zgcCurrent
             // 
-            this.zgcCurrent.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.zgcCurrent.Cursor = System.Windows.Forms.Cursors.Hand;
             this.zgcCurrent.IsPrintKeepAspectRatio = false;
             this.zgcCurrent.Location = new System.Drawing.Point(8, 232);
@@ -124,10 +123,10 @@
             this.zgcCurrent.Size = new System.Drawing.Size(700, 200);
             this.zgcCurrent.TabIndex = 4;
             this.zgcCurrent.ZoomButtons = System.Windows.Forms.MouseButtons.None;
+            this.zgcCurrent.DoubleClickEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zgcCurrent_DoubleClickEvent);
             // 
             // zgcVoltage
             // 
-            this.zgcVoltage.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.zgcVoltage.Cursor = System.Windows.Forms.Cursors.Hand;
             this.zgcVoltage.IsPrintKeepAspectRatio = false;
             this.zgcVoltage.Location = new System.Drawing.Point(8, 27);
@@ -144,6 +143,7 @@
             this.zgcVoltage.Size = new System.Drawing.Size(700, 200);
             this.zgcVoltage.TabIndex = 3;
             this.zgcVoltage.ZoomButtons = System.Windows.Forms.MouseButtons.None;
+            this.zgcVoltage.DoubleClickEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zgcVoltage_DoubleClickEvent);
             // 
             // VoltageCurrentGraphUI
             // 

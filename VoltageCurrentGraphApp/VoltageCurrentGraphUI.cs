@@ -123,7 +123,7 @@ namespace VoltageCurrentGraphApp
         private void InitZedGraphControls()
         {
             // Voltage Graph Specific settiong
-            zgcVoltage.GraphPane.AddCurve("Voltage", new RollingPointPairList(250000), Color.Green, SymbolType.None);
+            zgcVoltage.GraphPane.AddCurve("Voltage", new RollingPointPairList(1000), Color.Green, SymbolType.None);
             zgcVoltage.GraphPane.YAxis.Scale.FontSpec.FontColor = Color.Green;
             zgcVoltage.GraphPane.YAxis.Title.FontSpec.FontColor = Color.Green;
             zgcVoltage.GraphPane.YAxis.Scale.Min = -100;
@@ -170,36 +170,49 @@ namespace VoltageCurrentGraphApp
                 zGraph.IsEnableVPan = false;
                 zGraph.IsEnableVZoom = false;
 
-                // set X axis
-                zGraph.GraphPane.XAxis.Scale.Min = 0;
-                zGraph.GraphPane.XAxis.Scale.Max = 200;
-                zGraph.GraphPane.XAxis.Scale.MinorStep = 0;
-                zGraph.GraphPane.XAxis.Scale.MajorStep = 5;
-                zGraph.GraphPane.XAxis.Scale.Align = AlignP.Inside;
+                // X axis title config
                 zGraph.GraphPane.XAxis.Scale.FontSpec.Size = 20;
                 zGraph.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.Black;
-                zGraph.GraphPane.XAxis.MajorGrid.IsVisible = false;
-                zGraph.GraphPane.XAxis.MinorGrid.IsVisible = false;
-                zGraph.GraphPane.XAxis.Title.FontSpec.FontColor = Color.Black;
                 zGraph.GraphPane.XAxis.Title.FontSpec.Size = 16;
+                zGraph.GraphPane.XAxis.Title.FontSpec.FontColor = Color.Black;
                 zGraph.GraphPane.XAxis.Title.IsVisible = false;
 
+                // X axis scale config
+                zGraph.GraphPane.XAxis.Scale.Min = 0;
+                zGraph.GraphPane.XAxis.Scale.Max = 200;
+                zGraph.GraphPane.XAxis.Scale.MinorStep = 10;
+                zGraph.GraphPane.XAxis.Scale.MajorStep = 10;
+                zGraph.GraphPane.XAxis.Scale.Align = AlignP.Inside;
+
+                // X axis grid config
                 zGraph.GraphPane.XAxis.MajorGrid.IsVisible = true;
-                zGraph.GraphPane.XAxis.MajorGrid.DashOff = 5;
-                zGraph.GraphPane.YAxis.MajorGrid.DashOn = 0;
+                zGraph.GraphPane.XAxis.MinorGrid.IsVisible = false;
+                zGraph.GraphPane.XAxis.MajorGrid.DashOff = 0;
+                zGraph.GraphPane.XAxis.MajorGrid.DashOn = 0;
+
                 //zGraph.GraphPane.XAxis.Scale.IsVisible = false;
-                zGraph.GraphPane.XAxis.Scale.IsReverse = false;
+                //zGraph.GraphPane.XAxis.Scale.IsReverse = false;
 
                 // set Y axis
-                zGraph.GraphPane.YAxis.Scale.Align = AlignP.Inside;
                 zGraph.GraphPane.YAxis.Scale.FontSpec.Size = 24;
-                zGraph.GraphPane.YAxis.MajorGrid.IsVisible = false; //true
-                zGraph.GraphPane.YAxis.MajorGrid.DashOff = 5;
+                zGraph.GraphPane.XAxis.Scale.FontSpec.FontColor = Color.Black;
+                zGraph.GraphPane.YAxis.Title.FontSpec.Size = 24;
+                zGraph.GraphPane.XAxis.Title.FontSpec.FontColor = Color.Black;
+                zGraph.GraphPane.YAxis.Title.IsVisible = true;
+
+                // Y axis scale config
+                zGraph.GraphPane.YAxis.Scale.Min = 0;
+                zGraph.GraphPane.YAxis.Scale.Max = 200;
+                zGraph.GraphPane.YAxis.Scale.MinorStep = 50;
+                zGraph.GraphPane.YAxis.Scale.MajorStep = 50;
+                zGraph.GraphPane.YAxis.Scale.Align = AlignP.Inside;
+
+                // Y axis grid config
+                zGraph.GraphPane.YAxis.MajorGrid.IsVisible = true;
+                zGraph.GraphPane.YAxis.MinorGrid.IsVisible = false;
+                zGraph.GraphPane.YAxis.MajorGrid.DashOff = 0;
                 zGraph.GraphPane.YAxis.MajorGrid.DashOn = 0;
                 zGraph.GraphPane.YAxis.MajorGrid.IsZeroLine = false;
-                zGraph.GraphPane.YAxis.MinorGrid.IsVisible = false;
-                zGraph.GraphPane.YAxis.Title.FontSpec.Size = 24;
-                zGraph.GraphPane.YAxis.Title.IsVisible = true;
 
                 // hide curve label
                 zGraph.GraphPane.CurveList[0].Label.IsVisible = false;
@@ -262,6 +275,40 @@ namespace VoltageCurrentGraphApp
                 xScale.Max = current_x + (dX/100);
                 xScale.Min = xScale.Max - dX;
             }
+        }
+
+        private bool zgcVoltage_DoubleClickEvent(ZedGraphControl sender, MouseEventArgs e)
+        {
+            if (zgcVoltage.Dock != DockStyle.Fill)
+            {
+                zgcVoltage.Dock = DockStyle.Fill;
+                zgcCurrent.Dock = DockStyle.None;
+                zgcCurrent.Visible = false;
+            }
+            else
+            {
+                zgcVoltage.Dock = DockStyle.None;
+                zgcCurrent.Dock = DockStyle.None;
+                zgcCurrent.Visible = true;
+            }
+            return default(bool);
+        }
+
+        private bool zgcCurrent_DoubleClickEvent(ZedGraphControl sender, MouseEventArgs e)
+        {
+            if (zgcCurrent.Dock != DockStyle.Fill)
+            {
+                zgcCurrent.Dock = DockStyle.Fill;
+                zgcVoltage.Dock = DockStyle.None;
+                zgcVoltage.Visible = false;
+            }
+            else
+            {
+                zgcCurrent.Dock = DockStyle.None;
+                zgcVoltage.Dock = DockStyle.None;
+                zgcVoltage.Visible = true;
+            }
+            return default(bool);
         }
     }
 
